@@ -20,11 +20,12 @@ const AppRoutes = () => {
                     </Route>
 
                     {/* Layout hồ sơ cá nhân */}
-                    <Route path="/profile" element={<ProfileLayout />}>
+                    <Route path="/profile/:userId" element={<ProfileLayout />}>
                         <Route index element={<Profilepage />} />
                     </Route>
 
-                    <Route path="/" element={<Login_Register_Layout />}>
+                    {/* Layout đăng nhập/đăng ký */}
+                    <Route element={<Login_Register_Layout />}>
                         <Route path="/login" element={<LoginPage />} />
                         <Route path="/register" element={<RegisterPage />} />
                         <Route path="/verify" element={<VerifyPage />} />
