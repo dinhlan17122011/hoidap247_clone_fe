@@ -14,7 +14,7 @@ import {
     FaEllipsisH,
 } from 'react-icons/fa';
 
-import './index.css'
+import './index.css';
 const subjects = [
     { name: 'Tất cả', icon: <FaBook /> },
     { name: 'Toán Học', icon: <FaCalculator /> },
@@ -36,22 +36,20 @@ const subjects = [
 
 const SidebarComponents = () => {
     return (
-        <div className="w-48 p-2 rounded-lg shadow-md">
+        <aside className="w-64 bg-gray-100 p-4">
             <ul>
                 {subjects.map((subject, index) => (
                     <li
                         key={index}
-                        id="li"
-                        className={`flex items-center gap-2 px-4 py-2 text-gray-800 rounded-md cursor-pointer hover:bg-gray-200 ${
-                            subject.bg || 'bg-transparent'
+                        className={`flex items-center p-2 mb-2 rounded cursor-pointer ${
+                            subject.active ? 'bg-yellow-500 text-white' : 'hover:bg-gray-200'
                         }`}
                     >
-                        <span className="text-lg">{subject.icon}</span>
-                        <span className="text-sm font-medium">{subject.name}</span>
+                        <span className="mr-2">{subject.icon}</span> {subject.name}
                     </li>
                 ))}
             </ul>
-        </div>
+        </aside>
     );
 };
 

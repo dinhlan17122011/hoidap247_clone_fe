@@ -1,9 +1,12 @@
-import React from 'react'
+import React from 'react';
+import QuestionCard from '../../components/QuestionCard/QuestionCard';
 
 const HomePages = () => {
-  return (
-    <div>HomePages</div>
-  )
-}
+    return (
+        <div>
+            <QuestionCard />
+        </div>
+    );
+};
 
-export default HomePages
+export default HomePages;
