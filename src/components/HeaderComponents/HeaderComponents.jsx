@@ -49,10 +49,11 @@ const HeaderComponents = () => {
                     {/* Avatar & Menu */}
                     <button onClick={() => setOpenMenu(!openMenu)} className="flex items-center space-x-2">
                         <img
-                            src={user?.avatar ? `${API_URL}${user.avatar}` : '/default-avatar.jpg'}
+                            src={user?.avatar || '/default-avatar.jpg'}
                             alt="Avatar"
                             className="w-10 h-10 rounded-full border"
                         />
+
                         <span>{user.username}</span>
                         <IoMdArrowDropdown />
                     </button>
