@@ -5,10 +5,10 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext'; // Import AuthContext
 import logo from '../../assets/logo_h247.png';
 const API_URL = 'http://localhost:3000';
+
 const HeaderComponents = () => {
     const { user, setUser } = useAuth();
     const [openMenu, setOpenMenu] = useState(false);
-
     const handleLogout = () => {
         localStorage.removeItem('token'); // Xóa token
         localStorage.removeItem('user'); // Xóa thông tin user
@@ -60,9 +60,10 @@ const HeaderComponents = () => {
                     {/* Dropdown Menu */}
                     {openMenu && (
                         <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg p-2">
-                            <Link to="/profile" className="block px-4 py-2 hover:bg-gray-100">
+                            <Link to={`/profile/${user.id}`} className="block px-4 py-2 hover:bg-gray-100">
                                 Hồ sơ cá nhân
                             </Link>
+
                             <button
                                 onClick={handleLogout}
                                 className="block w-full text-left px-4 py-2 hover:bg-gray-100"

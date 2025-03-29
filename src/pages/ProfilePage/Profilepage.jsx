@@ -19,11 +19,12 @@ const ProfilePage = () => {
                     axios.get(`http://localhost:3000/api/question/user/${userId}`),
                     axios.get(`http://localhost:3000/api/answer/user/${userId}`),
                 ]);
-                console.log(userRes.data);
+
+                console.log('Dữ liệu câu trả lời:', answersRes.data);
 
                 setUser(userRes.data);
-                setQuestions(questionsRes.data);
-                setAnswers(answersRes.data);
+                setQuestions(Array.isArray(questionsRes.data) ? questionsRes.data : []);
+                setAnswers(Array.isArray(answersRes.data) ? answersRes.data : []);
             } catch (err) {
                 console.error('Lỗi khi tải dữ liệu:', err);
             } finally {
@@ -44,7 +45,7 @@ const ProfilePage = () => {
         formData.append('avatar', avatar);
 
         try {
-            const res = await axios.post(`http://localhost:3000/api/users/${userId}/avatar`, formData);
+            const res = await axios.post(`http://localhost:3000/api/user/${userId}/avatar`, formData);
             alert('Cập nhật ảnh đại diện thành công!');
             setUser({ ...user, avatar: res.data.avatarUrl });
         } catch (error) {
