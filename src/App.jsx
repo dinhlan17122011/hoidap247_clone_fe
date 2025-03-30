@@ -9,6 +9,7 @@ import RegisterPage from './pages/RegisterPage/RegisterPage.jsx';
 import VerifyPage from './pages/VerifyPage/VerifyPage.jsx';
 import Profilepage from './pages/ProfilePage/Profilepage.jsx';
 import GoogleAuthCallback from './context/GoogleAuthCallback.jsx';
+import SearchResults from './components/SearchResults/SearchResults.jsx';
 
 const AppRoutes = () => {
     return (
@@ -18,6 +19,7 @@ const AppRoutes = () => {
                     {/* Layout chính */}
                     <Route path="/" element={<MainLayout />}>
                         <Route index element={<HomePage />} />
+                        <Route path="/search/question" element={<SearchResults />} />
                     </Route>
                     <Route path="/auth-success" element={<GoogleAuthCallback />} />
                     {/* Layout hồ sơ cá nhân */}

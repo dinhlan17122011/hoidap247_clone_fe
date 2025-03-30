@@ -14,17 +14,25 @@ const ProfilePage = () => {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const [userRes, questionsRes, answersRes] = await Promise.all([
+                const [userRes, questionsRes, answersRes] = await Promise.allSettled([
                     axios.get(`http://localhost:3000/api/user/profile/${userId}`),
                     axios.get(`http://localhost:3000/api/question/user/${userId}`),
                     axios.get(`http://localhost:3000/api/answer/user/${userId}`),
                 ]);
 
-                console.log('Dữ liệu câu trả lời:', answersRes.data);
+                console.log('Dữ liệu câu trả lời:', answersRes);
 
-                setUser(userRes.data);
-                setQuestions(Array.isArray(questionsRes.data) ? questionsRes.data : []);
-                setAnswers(Array.isArray(answersRes.data) ? answersRes.data : []);
+                setUser(userRes.status === 'fulfilled' ? userRes.value.data : null);
+                setQuestions(
+                    questionsRes.status === 'fulfilled' && Array.isArray(questionsRes.value.data)
+                        ? questionsRes.value.data
+                        : [],
+                );
+                setAnswers(
+                    answersRes.status === 'fulfilled' && Array.isArray(answersRes.value.data)
+                        ? answersRes.value.data
+                        : [],
+                );
             } catch (err) {
                 console.error('Lỗi khi tải dữ liệu:', err);
             } finally {
@@ -55,6 +63,7 @@ const ProfilePage = () => {
     };
 
     if (loading) return <p className="text-center text-gray-600">Đang tải dữ liệu...</p>;
+    console.log(user.avatar);
 
     return (
         <div className="p-4 max-w-2xl mx-auto">
@@ -63,10 +72,11 @@ const ProfilePage = () => {
             {/* Ảnh đại diện */}
             <div className="flex items-center gap-4">
                 <img
-                    src={`http://localhost:3000${user.avatar}`}
+                    src={user.avatar.startsWith('http') ? user.avatar : `http://localhost:3000${user.avatar}`}
                     alt="Avatar"
                     className="w-20 h-20 rounded-full border"
                 />
+
                 <div>
                     <input type="file" onChange={handleAvatarChange} />
                     <button onClick={handleUploadAvatar} className="bg-blue-500 text-white px-4 py-2 rounded ml-2">

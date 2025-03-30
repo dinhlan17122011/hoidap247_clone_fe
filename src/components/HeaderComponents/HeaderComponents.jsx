@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FaUserCircle } from 'react-icons/fa';
 import { IoMdArrowDropdown } from 'react-icons/io';
+import SearchQuestion from '../searchQuestionComponents/searchQuestion.jsx';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext'; // Import AuthContext
 import logo from '../../assets/logo_h247.png';
@@ -9,6 +10,8 @@ const API_URL = 'http://localhost:3000';
 const HeaderComponents = () => {
     const { user, setUser } = useAuth();
     const [openMenu, setOpenMenu] = useState(false);
+    // const storedUser = JSON.parse(localStorage.getItem('user'));
+    // // const userId = storedUser?._id || 'Không có ID';
     const handleLogout = () => {
         localStorage.removeItem('token'); // Xóa token
         localStorage.removeItem('user'); // Xóa thông tin user
@@ -24,14 +27,7 @@ const HeaderComponents = () => {
             </div>
 
             {/* Thanh tìm kiếm */}
-            <div className="flex items-center w-1/3 bg-[#ecf4e9] rounded-lg">
-                <input
-                    type="text"
-                    placeholder="Câu hỏi của bạn là gì?"
-                    className="flex-1 px-4 py-2 text-gray-700 bg-transparent outline-none placeholder-gray-500"
-                />
-                <button className="px-4 py-2 text-white bg-yellow-500 rounded-r-lg hover:bg-yellow-600">Tìm</button>
-            </div>
+                <SearchQuestion />
 
             {/* Nếu chưa đăng nhập, hiển thị nút đăng nhập/đăng ký */}
             {!user ? (
