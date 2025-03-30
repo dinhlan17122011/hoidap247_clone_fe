@@ -8,7 +8,7 @@ import LoginPage from './pages/LoginPage/LoginPage.jsx';
 import RegisterPage from './pages/RegisterPage/RegisterPage.jsx';
 import VerifyPage from './pages/VerifyPage/VerifyPage.jsx';
 import Profilepage from './pages/ProfilePage/Profilepage.jsx';
-import AuthSuccess from './context/AuthSuccess.jsx';
+import GoogleAuthCallback from './context/GoogleAuthCallback.jsx';
 
 const AppRoutes = () => {
     return (
@@ -19,7 +19,7 @@ const AppRoutes = () => {
                     <Route path="/" element={<MainLayout />}>
                         <Route index element={<HomePage />} />
                     </Route>
-                    <Route path="/auth-success" element={<AuthSuccess />} />
+                    <Route path="/auth-success" element={<GoogleAuthCallback />} />
                     {/* Layout hồ sơ cá nhân */}
                     <Route path="/profile/:userId" element={<ProfileLayout />}>
                         <Route index element={<Profilepage />} />

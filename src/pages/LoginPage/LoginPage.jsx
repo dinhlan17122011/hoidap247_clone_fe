@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -8,7 +8,7 @@ import axiosClient from '../../api/axiosClient';
 import { useNavigate } from 'react-router-dom';
 import { FaGoogle } from 'react-icons/fa';
 import axios from 'axios';
-
+import { GoogleLogin } from '@react-oauth/google';
 // Schema validation
 const schema = yup.object().shape({
     email: yup.string().email('Email không hợp lệ').required('Vui lòng nhập email'),
@@ -26,57 +26,44 @@ const LoginPage = () => {
     const [successMessage, setSuccessMessage] = useState('');
     const navigate = useNavigate();
 
-    const handleGoogleLogin = () => {
-        window.location.href = 'http://localhost:3000/auth/google';
-    };
-
-    // Khi Google redirect về, lấy token từ URL
-    useEffect(() => {
-        const fetchGoogleUser = async () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const token = urlParams.get('token');
-
-            if (token) {
-                localStorage.setItem('token', token);
-
-                try {
-                    const response = await axios.get('http://localhost:3000/auth/google/success', {
-                        headers: { Authorization: `Bearer ${token}` },
-                        withCredentials: true,
-                    });
-
-                    console.log('User từ Google:', response.data);
-
-                    localStorage.setItem('user', JSON.stringify(response.data.user));
-                    setUser(response.data.user);
-
-                    navigate('/');
-                } catch (error) {
-                    console.error('Lỗi khi lấy thông tin user từ Google:', error);
-                }
-            }
-        };
-
-        fetchGoogleUser();
-    }, [setUser, navigate]);
-
     const onSubmit = async (data) => {
         try {
             const response = await axiosClient.post('/user/login', data);
-            console.log(response.data);
-            // Lưu token và user vào localStorage
             localStorage.setItem('token', response.data.token);
             localStorage.setItem('user', JSON.stringify(response.data.user));
-
-            // Cập nhật user trong context (để Header có thể nhận diện)
             setUser(response.data.user);
-
-            // Hiển thị thông báo thành công
             setSuccessMessage('Đăng nhập thành công! Chuyển hướng...');
-
             setTimeout(() => navigate('/'), 2000);
         } catch (error) {
             setError('email', { type: 'manual', message: error.response?.data?.message || 'Đăng nhập thất bại' });
+        }
+    };
+
+    // Xử lý đăng nhập Google thành công
+    const handleGoogleSuccess = async (response) => {
+        try {
+            console.log('Google login response:', response);
+
+            const { credential } = response;
+            if (!credential) {
+                console.error('Google credential is missing');
+                return;
+            }
+
+            const res = await axios.post('http://localhost:3000/api/auth/google/callback', {
+                tokenId: credential,
+            });
+
+            if (res.data.success) {
+                localStorage.setItem('token', res.data.token);
+                localStorage.setItem('user', JSON.stringify(res.data.user));
+                setUser(res.data.user);
+                navigate('/');
+            } else {
+                console.error('Lỗi đăng nhập Google:', res.data.message);
+            }
+        } catch (error) {
+            console.error('Lỗi khi đăng nhập Google:', error);
         }
     };
 
@@ -88,15 +75,6 @@ const LoginPage = () => {
 
             {successMessage && <Alert severity="success">{successMessage}</Alert>}
             {errors.email && <Alert severity="error">{errors.email.message}</Alert>}
-            <Button
-                variant="outlined"
-                fullWidth
-                sx={{ mt: 2 }}
-                className="flex items-center justify-center gap-2 bg-red-500 text-white hover:bg-red-600"
-                onClick={handleGoogleLogin}
-            >
-                <FaGoogle /> Đăng nhập bằng Google
-            </Button>
 
             <form onSubmit={handleSubmit(onSubmit)}>
                 <TextField
@@ -128,6 +106,14 @@ const LoginPage = () => {
                     {isSubmitting ? <CircularProgress size={24} color="inherit" /> : 'Đăng nhập'}
                 </Button>
             </form>
+
+            <Box mt={3}>
+                    <GoogleLogin
+                        onSuccess={handleGoogleSuccess}
+                        onError={() => console.error('Login failed')}
+                        auto_select={false} // Tắt auto-login, tránh mở trang khác ngoài popup
+                    />
+            </Box>
         </Box>
     );
 };
