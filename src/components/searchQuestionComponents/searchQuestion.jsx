@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import removeAccents from 'remove-accents'
 const SearchQuestion = () => {
     const [query, setQuery] = useState('');
     const navigate = useNavigate();
 
     const handleSearch = () => {
         if (query.trim()) {
-            const slug = query
+            const slug = removeAccents(query) // Xóa dấu tiếng Việt chính xác
                 .toLowerCase()
-                .normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, '') // Loại bỏ dấu tiếng Việt
                 .replace(/\s+/g, '-') // Thay dấu cách bằng dấu gạch ngang
-                .replace(/[^a-z0-9-]/g, ''); // Xóa ký tự đặc biệt
-
+                .replace(/[^a-z0-9-đ]/g, ''); // Giữ lại ký tự "đ"
+    
             console.log('🔍 Điều hướng đến:', `http://localhost:5173/search/question/${encodeURIComponent(slug)}`);
             navigate(`/search/question?q=${encodeURIComponent(slug)}`);
         }
