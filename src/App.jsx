@@ -10,6 +10,7 @@ import VerifyPage from './pages/VerifyPage/VerifyPage.jsx';
 import Profilepage from './pages/ProfilePage/Profilepage.jsx';
 import GoogleAuthCallback from './context/GoogleAuthCallback.jsx';
 import SearchResults from './components/SearchResults/SearchResults.jsx';
+import QuestionDetail from './components/QuestionDetail/QuestionDetail.jsx';
 
 const AppRoutes = () => {
     return (
@@ -25,6 +26,10 @@ const AppRoutes = () => {
                     {/* Layout hồ sơ cá nhân */}
                     <Route path="/profile/:userId" element={<ProfileLayout />}>
                         <Route index element={<Profilepage />} />
+                    </Route>
+
+                    <Route path="/" element={<ProfileLayout />}>
+                        <Route path="/question/:slug" element={<QuestionDetail />} />
                     </Route>
 
                     {/* Layout đăng nhập/đăng ký */}

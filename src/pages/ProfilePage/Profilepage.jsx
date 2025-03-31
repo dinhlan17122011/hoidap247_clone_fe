@@ -41,6 +41,7 @@ const ProfilePage = () => {
         };
         fetchUserData();
     }, [userId]);
+    console.log(questions);
 
     const handleAvatarChange = (e) => {
         setAvatar(e.target.files[0]);
@@ -94,7 +95,7 @@ const ProfilePage = () => {
                     {questions.map((q) => (
                         <li key={q._id}>
                             <a href={`/question/${q.slug}`} className="text-blue-500 hover:underline">
-                                {q.title}
+                                {q.content}
                             </a>
                         </li>
                     ))}
