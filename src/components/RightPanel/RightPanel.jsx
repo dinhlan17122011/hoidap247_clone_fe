@@ -1,6 +1,9 @@
 import React from "react";
+import { useAuth } from "../../context/AuthContext"; // Điều chỉnh đường dẫn cho phù hợp
 
 const RightPanel = () => {
+  const { user } = useAuth();
+
   return (
     <aside className="w-64 p-4 bg-gray-100">
       <div className="p-4 mb-4 bg-white shadow rounded">
@@ -11,9 +14,11 @@ const RightPanel = () => {
           <li>✉️ Gửi đề về Hoidap247</li>
         </ul>
       </div>
-      <button className="w-full p-4 text-white bg-yellow-500 rounded-full hover:bg-yellow-600">
-        Đặt câu hỏi +
-      </button>
+      {user && (
+        <button className="w-full p-4 text-white bg-yellow-500 rounded-full hover:bg-yellow-600">
+          Đặt câu hỏi +
+        </button>
+      )}
     </aside>
   );
 };

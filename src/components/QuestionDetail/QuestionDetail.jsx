@@ -1,45 +1,78 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
 import { Box, Typography, CircularProgress, Alert, Divider, Avatar } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-
-const API_URL = 'http://localhost:3000';
+import useUser from '../../hooks/useUser'; // Import hook useUser
+import axiosClient from '../../api/axiosClient'; // Import axios client
 
 const QuestionDetail = () => {
-    const { slug } = useParams(); // Lấy slug từ URL
+    const { slug } = useParams();
     const [question, setQuestion] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    // Sử dụng hook useUser khi đã có question và userId
+    const { user: questionUser, loading: userLoading, error: userError } = useUser(question?.userId);
+
     useEffect(() => {
-        axios
-            .get(`${API_URL}/api/question/${slug}`)
-            .then((res) => {
-                console.log('📌 Chi tiết câu hỏi:', res.data);
-                setQuestion(res.data[0]); // Lấy câu hỏi đầu tiên
+        const fetchQuestion = async () => {
+            try {
+                setLoading(true);
+                const response = await axiosClient.get(`/question/${slug}`);
+                setQuestion(response.data[0]);
+            } catch (err) {
+                console.error('❌ Lỗi:', err);
+                setError(err.response?.data?.message || 'Không tải được dữ liệu câu hỏi');
+            } finally {
                 setLoading(false);
-            })
-            .catch((err) => {
-                console.error('❌ Lỗi API:', err);
-                setError('Không tìm thấy câu hỏi.');
-                setLoading(false);
-            });
+            }
+        };
+
+        fetchQuestion();
     }, [slug]);
 
-    if (loading) return <CircularProgress />;
-    if (error) return <Alert severity="error">{error}</Alert>;
-    if (!question) return <Typography textAlign="center">Không có dữ liệu.</Typography>;
+    if (loading) {
+        return (
+            <Box display="flex" justifyContent="center" mt={4}>
+                <CircularProgress />
+            </Box>
+        );
+    }
+
+    if (error) {
+        return (
+            <Box mt={4}>
+                <Alert severity="error">{error}</Alert>
+            </Box>
+        );
+    }
+
+    if (!question) {
+        return (
+            <Box mt={4} textAlign="center">
+                <Typography variant="h6">Không tìm thấy câu hỏi</Typography>
+            </Box>
+        );
+    }
 
     return (
-        <Box p={4}>
+        <Box p={4} maxWidth="800px" margin="0 auto">
+            {/* Phần thông tin user */}
             <Box display="flex" alignItems="center" gap={2} mb={2}>
-                <Avatar src="https://randomuser.me/api/portraits/women/44.jpg">
-                    <AccountCircleIcon />
-                </Avatar>
+                {userLoading ? (
+                    <CircularProgress size={24} />
+                ) : userError ? (
+                    <Avatar>
+                        <AccountCircleIcon />
+                    </Avatar>
+                ) : (
+                    <Avatar src={questionUser?.avatar}>
+                        {questionUser?.username?.charAt(0) || <AccountCircleIcon />}
+                    </Avatar>
+                )}
                 <Box>
                     <Typography variant="body1" fontWeight="bold" color="primary">
-                        {question.subject}
+                        {userLoading ? 'Đang tải...' : questionUser?.username || 'Ẩn danh'}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                         {new Date(question.createdAt).toLocaleString()}
@@ -47,9 +80,23 @@ const QuestionDetail = () => {
                 </Box>
             </Box>
 
-            <Divider sx={{ my: 2 }} />
+            <Divider sx={{ my: 3 }} />
 
-            <Typography variant="body1" color="text.secondary" sx={{ mt: 2 }}>
+            {/* Tiêu đề câu hỏi */}
+            <Typography variant="h5" component="h1" gutterBottom>
+                {question.subject}
+            </Typography>
+
+            {/* Nội dung câu hỏi */}
+            <Typography
+                variant="body1"
+                color="text.primary"
+                sx={{
+                    mt: 2,
+                    whiteSpace: 'pre-line',
+                    lineHeight: 1.6,
+                }}
+            >
                 {question.content}
             </Typography>
         </Box>

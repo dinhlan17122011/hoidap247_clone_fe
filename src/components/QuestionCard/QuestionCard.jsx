@@ -1,8 +1,8 @@
 import React from 'react';
-import { Avatar, Box, Button, Card, CardContent, Typography, CircularProgress, Alert, Divider } from '@mui/material';
+import { Box, Button, Card, CardContent, Typography, CircularProgress, Alert, Divider } from '@mui/material';
 import { Link } from 'react-router-dom';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import useQuestions from '../../hooks/useQuestions.js';
+import UserInfo from './UserInfo'; // Import component mới
 
 const QuestionCard = () => {
     const { questions, loading, error } = useQuestions();
@@ -27,7 +27,7 @@ const QuestionCard = () => {
                 <Card
                     key={question._id}
                     component={Link}
-                    to={`/question/${question.slug}`} // Giả sử mỗi câu hỏi có trường slug
+                    to={`/question/${question.slug}`}
                     sx={{
                         borderRadius: 3,
                         boxShadow: 3,
@@ -36,41 +36,28 @@ const QuestionCard = () => {
                         '&:hover': {
                             boxShadow: 6,
                             transform: 'scale(1.02)',
-                            textDecoration: 'none', // Loại bỏ gạch chân của link
+                            textDecoration: 'none',
                             cursor: 'pointer',
                         },
-                        textDecoration: 'none', // Loại bỏ gạch chân của link
+                        textDecoration: 'none',
                     }}
                 >
                     <CardContent>
-                        {/* Header */}
-                        <Box display="flex" alignItems="center" gap={2} mb={1}>
-                            <Avatar src="https://randomuser.me/api/portraits/women/44.jpg">
-                                <AccountCircleIcon />
-                            </Avatar>
-                            <Box>
-                                <Typography variant="body1" fontWeight="bold" color="primary">
-                                    {question.subject}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    {new Date(question.createdAt).toLocaleString()}
-                                </Typography>
-                            </Box>
-                        </Box>
+                        {/* Sử dụng component UserInfo */}
+                        <UserInfo userId={question.userId} createdAt={question.createdAt} />
 
                         <Divider sx={{ my: 1 }} />
-                        {/* Nội dung câu hỏi */}
+                        
                         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                             {question.content.length > 150 ? `${question.content.slice(0, 150)}...` : question.content}
                         </Typography>
 
-                        {/* Nút trả lời */}
                         <Button
                             variant="contained"
                             color="primary"
                             size="small"
                             sx={{ borderRadius: 2, textTransform: 'none' }}
-                            onClick={(e) => e.preventDefault()} // Ngăn chặn sự kiện click lan ra toàn bộ card
+                            onClick={(e) => e.preventDefault()}
                         >
                             Trả lời
                         </Button>

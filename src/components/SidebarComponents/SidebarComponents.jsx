@@ -14,11 +14,13 @@ import {
     FaEllipsisH,
 } from 'react-icons/fa';
 
+import { BiAtom } from "react-icons/bi";
+
 import './index.css';
 const subjects = [
     { name: 'Tất cả', icon: <FaBook /> },
     { name: 'Toán Học', icon: <FaCalculator /> },
-    { name: 'Vật Lý', icon: <FaFlask /> },
+    { name: 'Vật Lý', icon: <BiAtom /> },
     { name: 'Hóa Học', icon: <FaFlask /> },
     { name: 'Tiếng Anh', icon: <FaLanguage /> },
     { name: 'Ngữ Văn', icon: <FaBook /> },
