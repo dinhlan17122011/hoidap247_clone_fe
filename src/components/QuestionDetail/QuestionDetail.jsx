@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Box, Typography, CircularProgress, Alert, Divider, Avatar } from '@mui/material';
+import { Box, Typography, CircularProgress, Alert, Divider, Avatar, Container, Chip } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import useUser from '../../hooks/useUser'; // Import hook useUser
-import axiosClient from '../../api/axiosClient'; // Import axios client
+import useUser from '../../hooks/useUser';
+import axiosClient from '../../api/axiosClient';
+import AnswerCard from './AnswerCard/AnswerCard'; // Import AnswerCard
 
 const QuestionDetail = () => {
     const { slug } = useParams();
@@ -11,25 +12,24 @@ const QuestionDetail = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Sử dụng hook useUser khi đã có question và userId
-    const { user: questionUser, loading: userLoading, error: userError } = useUser(question?.userId);
+    const { user: questionUser, loading: userLoading } = useUser(question?.userId);
 
     useEffect(() => {
-        const fetchQuestion = async () => {
+        const fetchData = async () => {
             try {
                 setLoading(true);
                 const response = await axiosClient.get(`/question/${slug}`);
-                setQuestion(response.data[0]);
+                console.log('Dữ liệu câu hỏi:', response.data); // Kiểm tra dữ liệu trả về
+                setQuestion(response.data[0]); // Giả sử API trả về mảng, lấy phần tử đầu tiên
             } catch (err) {
-                console.error('❌ Lỗi:', err);
-                setError(err.response?.data?.message || 'Không tải được dữ liệu câu hỏi');
+                setError(err.response?.data?.message || 'Không tải được dữ liệu');
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchQuestion();
-    }, [slug]);
+        fetchData();
+    }, [slug]); // Chỉ phụ thuộc vào slug
 
     if (loading) {
         return (
@@ -56,50 +56,52 @@ const QuestionDetail = () => {
     }
 
     return (
-        <Box p={4} maxWidth="800px" margin="0 auto">
-            {/* Phần thông tin user */}
-            <Box display="flex" alignItems="center" gap={2} mb={2}>
-                {userLoading ? (
-                    <CircularProgress size={24} />
-                ) : userError ? (
-                    <Avatar>
-                        <AccountCircleIcon />
-                    </Avatar>
-                ) : (
-                    <Avatar src={questionUser?.avatar}>
-                        {questionUser?.username?.charAt(0) || <AccountCircleIcon />}
-                    </Avatar>
-                )}
-                <Box>
-                    <Typography variant="body1" fontWeight="bold" color="primary">
-                        {userLoading ? 'Đang tải...' : questionUser?.username || 'Ẩn danh'}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                        {new Date(question.createdAt).toLocaleString()}
-                    </Typography>
+        <Container maxWidth="md">
+            {/* Phần câu hỏi */}
+            <Box p={3} sx={{ backgroundColor: 'background.paper', borderRadius: 2, mt: 3 }}>
+                <Box display="flex" alignItems="center" gap={2} mb={2}>
+                    {userLoading ? (
+                        <CircularProgress size={24} />
+                    ) : (
+                        <Avatar src={questionUser?.avatar}>
+                            {questionUser?.username?.charAt(0) || <AccountCircleIcon />}
+                        </Avatar>
+                    )}
+                    <Box>
+                        <Typography variant="subtitle1" fontWeight="bold">
+                            {userLoading ? 'Đang tải...' : questionUser?.username || 'Ẩn danh'}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">
+                            {new Date(question.createdAt).toLocaleString('vi-VN')}
+                        </Typography>
+                    </Box>
                 </Box>
+
+                <Typography variant="h5" component="h1" gutterBottom>
+                    {question.subject}
+                </Typography>
+
+                {question.tags?.length > 0 && (
+                    <Box mb={2}>
+                        {question.tags.map((tag) => (
+                            <Chip key={tag} label={tag} size="small" sx={{ mr: 1, mb: 1 }} />
+                        ))}
+                    </Box>
+                )}
+
+                <Typography variant="body1" whiteSpace="pre-line" lineHeight={1.6} paragraph>
+                    {question.content}
+                </Typography>
             </Box>
 
-            <Divider sx={{ my: 3 }} />
-
-            {/* Tiêu đề câu hỏi */}
-            <Typography variant="h5" component="h1" gutterBottom>
-                {question.subject}
-            </Typography>
-
-            {/* Nội dung câu hỏi */}
-            <Typography
-                variant="body1"
-                color="text.primary"
-                sx={{
-                    mt: 2,
-                    whiteSpace: 'pre-line',
-                    lineHeight: 1.6,
-                }}
-            >
-                {question.content}
-            </Typography>
-        </Box>
+            {/* Phần câu trả lời */}
+            <Box mt={4}>
+                <Typography variant="h6" fontWeight="bold">
+                    Câu trả lời
+                </Typography>
+                <AnswerCard userId={question.userId} questionId={question._id} /> {/* Truyền đúng _id vào AnswerCard */}
+            </Box>
+        </Container>
     );
 };
 
