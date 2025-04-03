@@ -15,8 +15,8 @@ const RightPanel = () => {
         </ul>
       </div>
       {user && (
-        <button className="w-full p-4 text-white bg-yellow-500 rounded-full hover:bg-yellow-600">
-          Đặt câu hỏi +
+        <button className="w-full p-4 text-white bg-yellow-500 rounded-full hover:bg-yellow-600" >
+          <a href="/addQuestion">Đặt câu hỏi +</a>
         </button>
       )}
     </aside>

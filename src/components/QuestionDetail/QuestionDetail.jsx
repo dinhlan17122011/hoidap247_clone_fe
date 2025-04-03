@@ -5,12 +5,15 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import useUser from '../../hooks/useUser';
 import axiosClient from '../../api/axiosClient';
 import AnswerCard from './AnswerCard/AnswerCard'; // Import AnswerCard
+import { useAuth } from '../../context/AuthContext';
 
 const QuestionDetail = () => {
     const { slug } = useParams();
     const [question, setQuestion] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+     const { user } = useAuth();
 
     const { user: questionUser, loading: userLoading } = useUser(question?.userId);
 
@@ -29,6 +32,10 @@ const QuestionDetail = () => {
 
         fetchData();
     }, [slug]); // Chỉ phụ thuộc vào slug
+    const decodeHTML = (str) => {
+        const doc = new DOMParser().parseFromString(str, 'text/html');
+        return doc.body.textContent || '';
+    };
 
     if (loading) {
         return (
@@ -77,8 +84,9 @@ const QuestionDetail = () => {
                 </Box>
 
                 <Typography variant="body1" whiteSpace="pre-line" lineHeight={1.6} paragraph>
-                    {question.content}
+                    {decodeHTML(question.content)}
                 </Typography>
+
                 {question.tags?.length > 0 && (
                     <Box mb={2}>
                         {question.tags.map((tag) => (
@@ -87,6 +95,11 @@ const QuestionDetail = () => {
                     </Box>
                 )}
             </Box>
+            {user && (
+        <button className="w-full p-4 text-white bg-yellow-500 rounded-full hover:bg-yellow-600" >
+          <a href="/addQuestion">Trả lời</a>
+        </button>
+      )}
 
             {/* Phần câu trả lời */}
             <Box mt={4}>

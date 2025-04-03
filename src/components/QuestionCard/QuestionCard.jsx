@@ -47,9 +47,9 @@ const QuestionCard = () => {
                         <UserInfo userId={question.userId} createdAt={question.createdAt} />
 
                         <Divider sx={{ my: 1 }} />
-                        
+
                         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                            {question.content.length > 150 ? `${question.content.slice(0, 150)}...` : question.content}
+                            <span dangerouslySetInnerHTML={{ __html: question.content }} />
                         </Typography>
 
                         <Button

@@ -3,7 +3,7 @@ import { AuthProvider } from './context/AuthContext.jsx';
 import MainLayout from './layouts/MainLayout.jsx';
 import ProfileLayout from './layouts/ProfileLayout';
 import Login_Register_Layout from './layouts/Login_Register_Layout.jsx';
-import QuestionDetailLayout from './layouts/QuestionDetailLayout.jsx'
+import QuestionDetailLayout from './layouts/QuestionDetailLayout.jsx';
 import HomePage from './pages/HomePages/HomePages';
 import LoginPage from './pages/LoginPage/LoginPage.jsx';
 import RegisterPage from './pages/RegisterPage/RegisterPage.jsx';
@@ -12,7 +12,7 @@ import Profilepage from './pages/ProfilePage/Profilepage.jsx';
 import GoogleAuthCallback from './context/GoogleAuthCallback.jsx';
 import SearchResults from './components/SearchResults/SearchResults.jsx';
 import QuestionDetail from './components/QuestionDetail/QuestionDetail.jsx';
-
+import AskQuestion from './pages/AskQuestionPage/AskQuestion.jsx';
 
 const AppRoutes = () => {
     return (
@@ -36,6 +36,7 @@ const AppRoutes = () => {
 
                     {/* Layout đăng nhập/đăng ký */}
                     <Route element={<Login_Register_Layout />}>
+                        <Route path="/addQuestion" element={<AskQuestion />} />
                         <Route path="/login" element={<LoginPage />} />
                         <Route path="/register" element={<RegisterPage />} />
                         <Route path="/verify" element={<VerifyPage />} />
