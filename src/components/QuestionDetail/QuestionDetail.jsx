@@ -19,7 +19,6 @@ const QuestionDetail = () => {
             try {
                 setLoading(true);
                 const response = await axiosClient.get(`/question/${slug}`);
-                console.log('Dữ liệu câu hỏi:', response.data); // Kiểm tra dữ liệu trả về
                 setQuestion(response.data[0]); // Giả sử API trả về mảng, lấy phần tử đầu tiên
             } catch (err) {
                 setError(err.response?.data?.message || 'Không tải được dữ liệu');
@@ -77,10 +76,9 @@ const QuestionDetail = () => {
                     </Box>
                 </Box>
 
-                <Typography variant="h5" component="h1" gutterBottom>
-                    {question.subject}
+                <Typography variant="body1" whiteSpace="pre-line" lineHeight={1.6} paragraph>
+                    {question.content}
                 </Typography>
-
                 {question.tags?.length > 0 && (
                     <Box mb={2}>
                         {question.tags.map((tag) => (
@@ -88,10 +86,6 @@ const QuestionDetail = () => {
                         ))}
                     </Box>
                 )}
-
-                <Typography variant="body1" whiteSpace="pre-line" lineHeight={1.6} paragraph>
-                    {question.content}
-                </Typography>
             </Box>
 
             {/* Phần câu trả lời */}
