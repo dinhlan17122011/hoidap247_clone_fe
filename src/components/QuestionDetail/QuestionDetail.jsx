@@ -70,7 +70,7 @@ const QuestionDetail = () => {
                     {userLoading ? (
                         <CircularProgress size={24} />
                     ) : (
-                        <Avatar src={questionUser?.avatar}>
+                        <Avatar  src={user?.avatar?.startsWith('http') ? user.avatar : `http://localhost:3000${user.avatar}`}>
                             {questionUser?.username?.charAt(0) || <AccountCircleIcon />}
                         </Avatar>
                     )}
