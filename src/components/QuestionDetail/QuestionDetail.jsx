@@ -6,6 +6,7 @@ import useUser from '../../hooks/useUser';
 import axiosClient from '../../api/axiosClient';
 import AnswerCard from './AnswerCard/AnswerCard'; // Import AnswerCard
 import { useAuth } from '../../context/AuthContext';
+import AskAnswers from '../AskAnwers/AskAnwers';
 
 const QuestionDetail = () => {
     const { slug } = useParams();
@@ -13,7 +14,7 @@ const QuestionDetail = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-     const { user } = useAuth();
+    const { user } = useAuth();
 
     const { user: questionUser, loading: userLoading } = useUser(question?.userId);
 
@@ -96,10 +97,13 @@ const QuestionDetail = () => {
                 )}
             </Box>
             {user && (
-        <button className="w-full p-4 text-white bg-yellow-500 rounded-full hover:bg-yellow-600" >
-          <a href="/addQuestion">Trả lời</a>
-        </button>
-      )}
+                <Box mt={4}>
+                    <Typography variant="h6" fontWeight="bold">
+                        Câu trả lời
+                    </Typography>
+                    <AskAnswers questionId={question?._id} />
+                </Box>
+            )}
 
             {/* Phần câu trả lời */}
             <Box mt={4}>

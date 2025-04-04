@@ -6,6 +6,8 @@ import useUser from '../../hooks/useUser.js';
 const UserInfo = ({ userId, createdAt }) => {
     const { user, loading, error } = useUser(userId);
 
+    console.log(user?.avatar);
+
     return (
         <Box display="flex" alignItems="center" gap={2} mb={1}>
             {loading ? (
@@ -15,7 +17,7 @@ const UserInfo = ({ userId, createdAt }) => {
                     <AccountCircleIcon />
                 </Avatar>
             ) : (
-                <Avatar src={user?.avatar}>
+                <Avatar src={user?.avatar?.startsWith('http') ? user.avatar : `http://localhost:3000${user.avatar}`}>
                     {user?.username?.charAt(0) || <AccountCircleIcon />}
                 </Avatar>
             )}
